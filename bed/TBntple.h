@@ -43,26 +43,31 @@ Int_t NpSiB;
 Double_t SiPMbot_q[MaxPulse];
 Double_t SiPMbot_a[MaxPulse];
 Double_t SiPMbot_t[MaxPulse];
+Double_t SiPMbot_te[MaxPulse];
 
 Int_t NpSiL;
 Double_t SiPMlef_q[MaxPulse];
 Double_t SiPMlef_a[MaxPulse];
 Double_t SiPMlef_t[MaxPulse];
+Double_t SiPMlef_te[MaxPulse];
 
 Int_t NpSiC;
 Double_t SiPMcen_q[MaxPulse];
 Double_t SiPMcen_a[MaxPulse];
 Double_t SiPMcen_t[MaxPulse];
+Double_t SiPMcen_te[MaxPulse];
 
 Int_t NpSiR;
 Double_t SiPMrig_q[MaxPulse];
 Double_t SiPMrig_a[MaxPulse];
 Double_t SiPMrig_t[MaxPulse];
+Double_t SiPMrig_te[MaxPulse];
 
 Int_t NpSiT;
 Double_t SiPMtop_q[MaxPulse];
 Double_t SiPMtop_a[MaxPulse];
 Double_t SiPMtop_t[MaxPulse];
+Double_t SiPMtop_te[MaxPulse];
 
 Int_t NpTrL;
 Double_t TrigL_q[MaxPulse];

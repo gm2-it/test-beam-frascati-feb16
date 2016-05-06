@@ -14,6 +14,12 @@ struct caen_5730 {
 	ULong64_t system_clock;
 	UShort_t trace[8][500];
 };
+//
+struct caen_5730L {
+	ULong64_t event_index;
+	ULong64_t system_clock;
+	UShort_t trace[8][250000];
+};
 
 #endif
   

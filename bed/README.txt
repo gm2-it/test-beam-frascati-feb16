@@ -4,9 +4,10 @@
 TBdisplay("inputWaveformfile.root",channel)
 when second digitizer present use 20+channel to select second digitizer	
 		
-root [0] .L TBtrace.cxx+				(class to process each trace)
-root [1] .L TBdisplay.c+				(program to display trace)
-root [2] TBdisplay("data/frascatirun_01091.root",5)
+root [0] .L TBtrace.cxx+			(class to process each trace)
+root [1] .L TBconfig.cxx+			(class to handle configurations)
+root [2] .L TBdisplay.c+			(program to display trace)
+root [3] TBdisplay("data/frascatirun_01091.root",5)
 Input file data/frascatirun_01091.root
 Error in <TTree::SetBranchAddress>: unknown branch -> caen_5730
 Enter command: n =new event, q= quit
@@ -23,95 +24,7 @@ Data[7] = 3575
 Data[8] = 3578
 Data[9] = 3576
 Data[10] = 3579
-Data[11] = 3580
-Data[12] = 3580
-Data[13] = 3575
-Data[14] = 3582
-Data[15] = 3583
-Data[16] = 3582
-Data[17] = 3580
-Data[18] = 3580
-Data[19] = 3581
-Data[20] = 3581
-Data[21] = 3577
-Data[22] = 3582
-Data[23] = 3574
-Data[24] = 3578
-Data[25] = 3580
-Data[26] = 3584
-Data[27] = 3578
-Data[28] = 3577
-Data[29] = 3577
-Data[30] = 3578
-Data[31] = 3572
-Data[32] = 3576
-Data[33] = 3579
-Data[34] = 3575
-Data[35] = 3578
-Data[36] = 3580
-Data[37] = 3574
-Data[38] = 3577
-Data[39] = 3575
-Data[40] = 3579
-Data[41] = 3580
-Data[42] = 3579
-Data[43] = 3579
-Data[44] = 3579
-Data[45] = 3576
-Data[46] = 3575
-Data[47] = 3579
-Data[48] = 3579
-Data[49] = 3579
-Data[50] = 3579
-Data[51] = 3578
-Data[52] = 3581
-Data[53] = 3578
-Data[54] = 3579
-Data[55] = 3578
-Data[56] = 3582
-Data[57] = 3581
-Data[58] = 3579
-Data[59] = 3577
-Data[60] = 3578
-Data[61] = 3575
-Data[62] = 3581
-Data[63] = 3579
-Data[64] = 3579
-Data[65] = 3578
-Data[66] = 3581
-Data[67] = 3578
-Data[68] = 3580
-Data[69] = 3578
-Data[70] = 3581
-Data[71] = 3576
-Data[72] = 3576
-Data[73] = 3578
-Data[74] = 3576
-Data[75] = 3574
-Data[76] = 3580
-Data[77] = 3580
-Data[78] = 3579
-Data[79] = 3578
-Data[80] = 3575
-Data[81] = 3580
-Data[82] = 3578
-Data[83] = 3579
-Data[84] = 3579
-Data[85] = 3578
-Data[86] = 3583
-Data[87] = 3577
-Data[88] = 3575
-Data[89] = 3577
-Data[90] = 3578
-Data[91] = 3583
-Data[92] = 3581
-Data[93] = 3580
-Data[94] = 3584
-Data[95] = 3581
-Data[96] = 3577
-Data[97] = 3577
-Data[98] = 3578
-Data[99] = 3580
+......
 Pulse #0: Charge = 1.08509e+006, time = 687, Ampl = 3266.38, base = 3578.38
 Enter command: n =new event, q= quit
 
@@ -121,13 +34,13 @@ Enter command: n =new event, q= quit
 TBgenNTP("inputWaveformFile.root","outputCompressedFile.root")
 
 root [0] .L TBtrace.cxx+        (class to process each trace)
-root [1] .L TBmakeNTP.cxx+	(class with compressed NTple structure)
-root [2] .L TBgenNTP.c+		(program creating the compressed NTple)
-root [3] gROOT->Reset():
-root [4] TBgenNTP("data/frascatirun_00352.root","data/352.root")
+root [1] .L TBconfig.cxx+		(class to handle configurations)
+root [2] .L TBmakeNTP.cxx+	(class with compressed NTple structure)
+root [3] .L TBgenNTP.c+	(program creating the compressed NTple)
+root [4] gROOT->Reset():
+root [5] TBgenNTP("data/frascatirun_00352.root","data/352.root")
 Input file data/frascatirun_00352.root
 nrun = 352
-Error in <TTree::SetBranchAddress>: unknown branch -> caen_5730
 Event # 0, Lab time = 3
 Event # 10000, Lab time = 102731
 Event # 20000, Lab time = 200538
@@ -140,7 +53,7 @@ Event # 80000, Lab time = 806699
 Event # 90000, Lab time = 909834
 Event # 100000, Lab time = 1.0183e+006
 End of event loop. 100673 processed.
-root [5]
+root [6]
 
 
 

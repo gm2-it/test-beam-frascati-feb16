@@ -74,26 +74,31 @@ private:
 	Double_t* SiPMbot_q;	// Bottom SiPM charge
 	Double_t* SiPMbot_a;	// Bottom SiPM ammplitude
 	Double_t* SiPMbot_t;	// Bottom SiPM time
+	Double_t* SiPMbot_te;	// Bottom SiPM end time
 	// 
 	Int_t NpSiL;					// Number of pulses in left SiPM
 	Double_t* SiPMlef_q;	// Left SiPM charge
 	Double_t* SiPMlef_a;	// Left SiPM amplitude
 	Double_t* SiPMlef_t;	// Left SiPM time
+	Double_t* SiPMlef_te;	// Left SiPM end time
 	//
 	Int_t NpSiC;					// Number of pulses in central SiPM
 	Double_t* SiPMcen_q;	// Center SiPM charge
 	Double_t* SiPMcen_a;	// Center SiPM amplitude
 	Double_t* SiPMcen_t;	// Center SiPM time
+	Double_t* SiPMcen_te;	// Center SiPM end time
 	//
 	Int_t NpSiR;					// Number of pulses in right SiPM
 	Double_t* SiPMrig_q;	// Right SiPM charge
 	Double_t* SiPMrig_a;	// Right SiPM amplitude
 	Double_t* SiPMrig_t;	// Right SiPM time
+	Double_t* SiPMrig_te;	// Right SiPM end time
 	//
 	Int_t NpSiT;					// Number of pulses in top SiPM
 	Double_t* SiPMtop_q;	// Top SiPM charge
 	Double_t* SiPMtop_a;	// Top SiPM amplitude
 	Double_t* SiPMtop_t;	// Top SiPM time
+	Double_t* SiPMtop_te;	// Top SiPM end time
 	//
 	// Trigger flags
 	Int_t NpTrL;				// Number of pulses in laser trigger
@@ -141,15 +146,20 @@ public:
 	void NTPreset();
 	//
 	// Generic NTP filling routine
-	void NTPfill(Int_t nrun, Int_t ch, Int_t Np, Double_t charge, Double_t ampl, Double_t time, Double_t Ltime);
+	void NTPfill(Int_t nrun, Int_t ch, Int_t Np, Double_t charge, Double_t ampl, Double_t time, Double_t timee, Double_t Ltime);
 	//
 	// Specific NTP filling routine for run range 214 - 420
-	void NTPfill1(Int_t ch, Int_t Np, Double_t charge, Double_t ampl, Double_t time, Double_t Ltime);
+	void NTPfill1(Int_t ch, Int_t Np, Double_t charge, Double_t ampl, Double_t time, Double_t timee, Double_t Ltime);
 	// Specific NTP filling routine for run range 839 - 846
-	void NTPfill2(Int_t ch, Int_t Np, Double_t charge, Double_t ampl, Double_t time, Double_t Ltime);
+	void NTPfill2(Int_t ch, Int_t Np, Double_t charge, Double_t ampl, Double_t time, Double_t timee, Double_t Ltime);
 	// Specific NTP filling routine for run range 1081 - 1107
-	void NTPfill3(Int_t ch, Int_t Np, Double_t charge, Double_t ampl, Double_t time, Double_t Ltime);
+	void NTPfill3(Int_t ch, Int_t Np, Double_t charge, Double_t ampl, Double_t time, Double_t timee, Double_t Ltime);
+	// Specific NTP filling routine for run range 1137 - 1191
+	void NTPfill4(Int_t ch, Int_t Np, Double_t charge, Double_t ampl, Double_t time, Double_t timee, Double_t Ltime);
+
 };
+
+
 
 
 

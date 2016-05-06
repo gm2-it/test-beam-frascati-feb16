@@ -11,6 +11,7 @@
 #include <TStyle.h>
 #include <iostream>
 #include "TBtrace.h"
+#include "TBconfig.h"
 #include "TBmakeNTP.h"
 
 
@@ -26,7 +27,7 @@ TBmakeNTP::TBmakeNTP(char* tID, char* tTitle)
 	ftID = tID;
 	ftTitle = tTitle;
 	//
-	const Int_t MaxPulse = 100;
+	const Int_t MaxPulse = 1000;
 	//
 	LabTime = 0;			// System time in milliseconds
 	//
@@ -67,26 +68,31 @@ TBmakeNTP::TBmakeNTP(char* tID, char* tTitle)
 	SiPMbot_q = new Double_t[MaxPulse];	// Bottom SiPM charge
 	SiPMbot_a = new Double_t[MaxPulse];	// Bottom SiPM ammplitude
 	SiPMbot_t = new Double_t[MaxPulse];	// Bottom SiPM time
+	SiPMbot_te= new Double_t[MaxPulse];	// Bottom SiPM time end
 	// 
 	NpSiL = 0;					// Number of pulses in left SiPM
 	SiPMlef_q = new Double_t[MaxPulse];	// Left SiPM charge
 	SiPMlef_a = new Double_t[MaxPulse];	// Left SiPM amplitude
 	SiPMlef_t = new Double_t[MaxPulse];	// Left SiPM time
+	SiPMlef_te= new Double_t[MaxPulse];	// Left SiPM time end
 	//
 	NpSiC = 0;					// Number of pulses in central SiPM
 	SiPMcen_q = new Double_t[MaxPulse];	// Center SiPM charge
 	SiPMcen_a = new Double_t[MaxPulse];	// Center SiPM amplitude
 	SiPMcen_t = new Double_t[MaxPulse];	// Center SiPM time
+	SiPMcen_te= new Double_t[MaxPulse];	// Center SiPM time end
 	//
 	NpSiR = 0;					// Number of pulses in right SiPM
 	SiPMrig_q = new Double_t[MaxPulse];	// Right SiPM charge
 	SiPMrig_a = new Double_t[MaxPulse];	// Right SiPM amplitude
 	SiPMrig_t = new Double_t[MaxPulse];	// Right SiPM time
+	SiPMrig_te= new Double_t[MaxPulse];	// Right SiPM time end
 	//
 	NpSiT = 0;					// Number of pulses in top SiPM
 	SiPMtop_q = new Double_t[MaxPulse];	// Top SiPM charge
 	SiPMtop_a = new Double_t[MaxPulse];	// Top SiPM amplitude
 	SiPMtop_t = new Double_t[MaxPulse];	// Top SiPM time
+	SiPMtop_te= new Double_t[MaxPulse];	// Top SiPM time end
 	//
 	// Trigger flags
 	NpTrL = 0;				// Number of pulses in laser trigger
@@ -165,26 +171,31 @@ TBmakeNTP::~TBmakeNTP()
 	delete[] SiPMbot_q;	// Bottom SiPM charge
 	delete[] SiPMbot_a;	// Bottom SiPM ammplitude
 	delete[] SiPMbot_t;	// Bottom SiPM time
+	delete[] SiPMbot_te;	// Bottom SiPM time end
 	// 
 	NpSiL = 0;					// Number of pulses in left SiPM
 	delete[] SiPMlef_q;	// Left SiPM charge
 	delete[] SiPMlef_a;	// Left SiPM amplitude
 	delete[] SiPMlef_t;	// Left SiPM time
+	delete[] SiPMlef_te;	// Left SiPM time end
 	//
 	NpSiC = 0;					// Number of pulses in central SiPM
 	delete[] SiPMcen_q;	// Center SiPM charge
 	delete[] SiPMcen_a;	// Center SiPM amplitude
 	delete[] SiPMcen_t;	// Center SiPM time
+	delete[] SiPMcen_te;	// Center SiPM time end
 	//
 	NpSiR = 0;					// Number of pulses in right SiPM
 	delete[] SiPMrig_q;	// Right SiPM charge
 	delete[] SiPMrig_a;	// Right SiPM amplitude
 	delete[] SiPMrig_t;	// Right SiPM time
+	delete[] SiPMrig_te;	// Right SiPM time end
 	//
 	NpSiT = 0;					// Number of pulses in top SiPM
 	delete[] SiPMtop_q;	// Top SiPM charge
 	delete[] SiPMtop_a;	// Top SiPM amplitude
 	delete[] SiPMtop_t;	// Top SiPM time
+	delete[] SiPMtop_te;	// Top SiPM time end
 	//
 	// Trigger flags
 	NpTrL = 0;				// Number of pulses in laser trigger
@@ -213,7 +224,6 @@ TBmakeNTP::~TBmakeNTP()
 	delete[] VF_q;
 	delete[] VF_a;
 	delete[] VF_t;
-
 }
 //
 //
@@ -240,15 +250,16 @@ void TBmakeNTP::NTPreset()
 	NpVF = 0;
 }
 //
-void TBmakeNTP::NTPfill(Int_t nrun, Int_t ch,Int_t Np, Double_t charge, Double_t ampl, Double_t time, Double_t Ltime)
+void TBmakeNTP::NTPfill(Int_t nrun, Int_t ch,Int_t Np, Double_t charge, Double_t ampl, Double_t time, Double_t timee, Double_t Ltime)
 {
-	
-	if(nrun>=340 && nrun<=352)		NTPfill1(ch, Np, charge, ampl, time, Ltime);
-	if(nrun>=839 && nrun<=846)		NTPfill2(ch, Np, charge, ampl, time, Ltime);
-	if(nrun>=1081 && nrun<= 1107)	NTPfill3(ch, Np, charge, ampl, time, Ltime);
+	if(nrun>= conf1min && nrun<= conf1max)	NTPfill1(ch, Np, charge, ampl, time, timee, Ltime);
+	if(nrun>= conf2min && nrun<= conf2max)	NTPfill2(ch, Np, charge, ampl, time, timee, Ltime);
+	if(nrun>= conf3min && nrun<= conf3max) 	NTPfill3(ch, Np, charge, ampl, time, timee, Ltime);
+    if(nrun>= conf4min && nrun<= conf4max)  NTPfill4(ch, Np, charge, ampl, time, timee, Ltime);
 
 }
-void TBmakeNTP::NTPfill1(Int_t ch, Int_t Np, Double_t charge, Double_t ampl, Double_t time, Double_t Ltime)
+// Start NTPfillN
+void TBmakeNTP::NTPfill1(Int_t ch, Int_t Np, Double_t charge, Double_t ampl, Double_t time, Double_t timee, Double_t Ltime)
 {
 	//
 	// Fill NTPle arrays for run period 1
@@ -310,6 +321,7 @@ void TBmakeNTP::NTPfill1(Int_t ch, Int_t Np, Double_t charge, Double_t ampl, Dou
 			SiPMbot_q[Np] = charge;
 			SiPMbot_a[Np] = ampl;
 			SiPMbot_t[Np] = time;
+			SiPMbot_te[Np] = timee;
 			break;
 		}
 	case 9:
@@ -318,6 +330,7 @@ void TBmakeNTP::NTPfill1(Int_t ch, Int_t Np, Double_t charge, Double_t ampl, Dou
 			SiPMlef_q[Np] = charge;
 			SiPMlef_a[Np] = ampl;
 			SiPMlef_t[Np] = time;
+			SiPMlef_te[Np] = timee;
 			break;
 		}
 	case 10:
@@ -326,6 +339,7 @@ void TBmakeNTP::NTPfill1(Int_t ch, Int_t Np, Double_t charge, Double_t ampl, Dou
 			SiPMcen_q[Np] = charge;
 			SiPMcen_a[Np] = ampl;
 			SiPMcen_t[Np] = time;
+			SiPMcen_te[Np] = timee;
 			break;
 		}
 	case 11:
@@ -334,6 +348,7 @@ void TBmakeNTP::NTPfill1(Int_t ch, Int_t Np, Double_t charge, Double_t ampl, Dou
 			SiPMrig_q[Np] = charge;
 			SiPMrig_a[Np] = ampl;
 			SiPMrig_t[Np] = time;
+			SiPMrig_te[Np] = timee;
 			break;
 		}
 	case 12:
@@ -342,6 +357,7 @@ void TBmakeNTP::NTPfill1(Int_t ch, Int_t Np, Double_t charge, Double_t ampl, Dou
 			SiPMtop_q[Np] = charge;
 			SiPMtop_a[Np] = ampl;
 			SiPMtop_t[Np] = time;
+			SiPMtop_te[Np] = timee;
 			break;
 		}
 	case 13:
@@ -371,10 +387,10 @@ void TBmakeNTP::NTPfill1(Int_t ch, Int_t Np, Double_t charge, Double_t ampl, Dou
 	default: 
 		break;
 	}
-}
+}// End NTPfill1
 
 //
-void TBmakeNTP::NTPfill2(Int_t ch, Int_t Np, Double_t charge, Double_t ampl, Double_t time, Double_t Ltime)
+void TBmakeNTP::NTPfill2(Int_t ch, Int_t Np, Double_t charge, Double_t ampl, Double_t time, Double_t timee, Double_t Ltime)
 {
 	//
 	// Fill NTPle arrays for run period 2
@@ -407,7 +423,7 @@ void TBmakeNTP::NTPfill2(Int_t ch, Int_t Np, Double_t charge, Double_t ampl, Dou
 			break;
 		}
 
-	case 7:
+	case 6:
 		{
 			NpLM1 = Np+1;			// Number pf pulses
 			LM1_q[Np] = charge;
@@ -415,7 +431,7 @@ void TBmakeNTP::NTPfill2(Int_t ch, Int_t Np, Double_t charge, Double_t ampl, Dou
 			LM1_t[Np] = time;
 			break;
 		}
-	case 8:
+	case 7:
 		{
 			NpLM2 = Np+1;			// Number pf pulses
 			LM2_q[Np] = charge;
@@ -457,6 +473,7 @@ void TBmakeNTP::NTPfill2(Int_t ch, Int_t Np, Double_t charge, Double_t ampl, Dou
 			SiPMlef_q[Np] = charge;
 			SiPMlef_a[Np] = ampl;
 			SiPMlef_t[Np] = time;
+			SiPMlef_te[Np] = timee;
 			break;
 		}
 	case 21:
@@ -465,6 +482,7 @@ void TBmakeNTP::NTPfill2(Int_t ch, Int_t Np, Double_t charge, Double_t ampl, Dou
 			SiPMcen_q[Np] = charge;
 			SiPMcen_a[Np] = ampl;
 			SiPMcen_t[Np] = time;
+			SiPMcen_te[Np] = timee;
 			break;
 		}
 	case 22:
@@ -473,6 +491,7 @@ void TBmakeNTP::NTPfill2(Int_t ch, Int_t Np, Double_t charge, Double_t ampl, Dou
 			SiPMrig_q[Np] = charge;
 			SiPMrig_a[Np] = ampl;
 			SiPMrig_t[Np] = time;
+			SiPMrig_te[Np] = timee;
 			break;
 		}
 	case 23:
@@ -481,6 +500,7 @@ void TBmakeNTP::NTPfill2(Int_t ch, Int_t Np, Double_t charge, Double_t ampl, Dou
 			SiPMtop_q[Np] = charge;
 			SiPMtop_a[Np] = ampl;
 			SiPMtop_t[Np] = time;
+			SiPMtop_te[Np] = timee;
 			break;
 		}
 	case 24:
@@ -489,6 +509,7 @@ void TBmakeNTP::NTPfill2(Int_t ch, Int_t Np, Double_t charge, Double_t ampl, Dou
 			SiPMbot_q[Np] = charge;
 			SiPMbot_a[Np] = ampl;
 			SiPMbot_t[Np] = time;
+			SiPMbot_te[Np] = timee;
 			break;
 		}
 	case 25:
@@ -513,10 +534,10 @@ void TBmakeNTP::NTPfill2(Int_t ch, Int_t Np, Double_t charge, Double_t ampl, Dou
 	default: 
 		break;
 	}
-} // end NTPfill1
+} // end NTPfill2
 
 
-void TBmakeNTP::NTPfill3(Int_t ch, Int_t Np, Double_t charge, Double_t ampl, Double_t time, Double_t Ltime)
+void TBmakeNTP::NTPfill3(Int_t ch, Int_t Np, Double_t charge, Double_t ampl, Double_t time, Double_t timee, Double_t Ltime)
 {
 	//
 	// Fill NTPle arrays for run period 3
@@ -599,6 +620,7 @@ void TBmakeNTP::NTPfill3(Int_t ch, Int_t Np, Double_t charge, Double_t ampl, Dou
 			SiPMlef_q[Np] = charge;
 			SiPMlef_a[Np] = ampl;
 			SiPMlef_t[Np] = time;
+			SiPMlef_te[Np] = timee;
 			break;
 		}
 	case 10:
@@ -607,6 +629,7 @@ void TBmakeNTP::NTPfill3(Int_t ch, Int_t Np, Double_t charge, Double_t ampl, Dou
 			SiPMcen_q[Np] = charge;
 			SiPMcen_a[Np] = ampl;
 			SiPMcen_t[Np] = time;
+			SiPMcen_te[Np] = timee;
 			break;
 		}
 	case 11:
@@ -615,6 +638,7 @@ void TBmakeNTP::NTPfill3(Int_t ch, Int_t Np, Double_t charge, Double_t ampl, Dou
 			SiPMrig_q[Np] = charge;
 			SiPMrig_a[Np] = ampl;
 			SiPMrig_t[Np] = time;
+			SiPMrig_te[Np] = timee;
 			break;
 		}
 	case 12:
@@ -623,6 +647,7 @@ void TBmakeNTP::NTPfill3(Int_t ch, Int_t Np, Double_t charge, Double_t ampl, Dou
 			SiPMtop_q[Np] = charge;
 			SiPMtop_a[Np] = ampl;
 			SiPMtop_t[Np] = time;
+			SiPMtop_te[Np] = timee;
 			break;
 		}
 	case 8:
@@ -631,6 +656,7 @@ void TBmakeNTP::NTPfill3(Int_t ch, Int_t Np, Double_t charge, Double_t ampl, Dou
 			SiPMbot_q[Np] = charge;
 			SiPMbot_a[Np] = ampl;
 			SiPMbot_t[Np] = time;
+			SiPMbot_te[Np] = timee;
 			break;
 		}
 	case 14:
@@ -665,7 +691,90 @@ void TBmakeNTP::NTPfill3(Int_t ch, Int_t Np, Double_t charge, Double_t ampl, Dou
 	default: 
 		break;
 	}
-} // end NTPfill2
+} // end NTPfill3
+
+void TBmakeNTP::NTPfill4(Int_t ch, Int_t Np, Double_t charge, Double_t ampl, Double_t time, Double_t timee, Double_t Ltime)
+{
+	//
+	// Fill NTPle arrays for run period 3
+	// 
+	LabTime= Ltime;
+	switch (ch)
+	{
+	case 27:
+		{
+			NpSM = Np+1;			// Number pf pulses
+			SM_q[Np] = charge;
+			SM_a[Np] = ampl;
+			SM_t[Np] = time;
+			break;
+		}
+	case 25:
+		{
+			NpLM1 = Np+1;			// Number pf pulses
+			LM1_q[Np] = charge;
+			LM1_a[Np] = ampl;
+			LM1_t[Np] = time;
+			break;
+		}
+	case 26:
+		{
+			NpTrL = Np+1;			// Number pf pulses
+			TrigL_q[Np] = charge;
+			TrigL_a[Np] = ampl;
+			TrigL_t[Np] = time;
+			break;
+		}
+	case 21:
+		{
+			NpSiL = Np+1;			// Number pf pulses
+			SiPMlef_q[Np] = charge;
+			SiPMlef_a[Np] = ampl;
+			SiPMlef_t[Np] = time;
+			SiPMlef_te[Np] = timee;
+			break;
+		}
+	case 22:
+		{
+			NpSiC = Np+1;			// Number pf pulses
+			SiPMcen_q[Np] = charge;
+			SiPMcen_a[Np] = ampl;
+			SiPMcen_t[Np] = time;
+			SiPMcen_te[Np] = timee;
+			break;
+		}
+	case 23:
+		{
+			NpSiR = Np+1;			// Number pf pulses
+			SiPMrig_q[Np] = charge;
+			SiPMrig_a[Np] = ampl;
+			SiPMrig_t[Np] = time;
+			SiPMrig_te[Np] = timee;
+			break;
+		}
+	case 24:
+		{
+			NpSiT = Np+1;			// Number pf pulses
+			SiPMtop_q[Np] = charge;
+			SiPMtop_a[Np] = ampl;
+			SiPMtop_t[Np] = time;
+			SiPMtop_te[Np] = timee;
+			break;
+		}
+	case 20:
+		{
+			NpSiB = Np+1;			// Number pf pulses
+			SiPMbot_q[Np] = charge;
+			SiPMbot_a[Np] = ampl;
+			SiPMbot_t[Np] = time;
+			SiPMbot_te[Np] = timee;
+			break;
+		}
+	default: 
+		break;
+	}
+} 
+// end NTPfill4
 
 
 
@@ -712,30 +821,36 @@ TTree *TBmakeNTP::NTPsetup()
 	tNTP->Branch("LM2_t",LM2_t,"LM2_t[NpLM2]/D");
 	//
 	// Crystal SiPM
+	//
 	tNTP->Branch("NpSiB",&NpSiB,"NpSiB/I");
 	tNTP->Branch("SiPMbot_q",SiPMbot_q,"SiPMbot_q[NpSiB]/D");
 	tNTP->Branch("SiPMbot_a",SiPMbot_a,"SiPMbot_a[NpSiB]/D");
 	tNTP->Branch("SiPMbot_t",SiPMbot_t,"SiPMbot_t[NpSiB]/D");
+	tNTP->Branch("SiPMbot_te",SiPMbot_te,"SiPMbot_te[NpSiB]/D");
 	//
 	tNTP->Branch("NpSiL",&NpSiL,"NpSiL/I");
 	tNTP->Branch("SiPMlef_q",SiPMlef_q,"SiPMlef_q[NpSiL]/D");
 	tNTP->Branch("SiPMlef_a",SiPMlef_a,"SiPMlef_a[NpSiL]/D");
 	tNTP->Branch("SiPMlef_t",SiPMlef_t,"SiPMlef_t[NpSiL]/D");
+	tNTP->Branch("SiPMlef_te",SiPMlef_te,"SiPMlef_te[NpSiL]/D");
 	//
 	tNTP->Branch("NpSiC",&NpSiC,"NpSiC/I");
 	tNTP->Branch("SiPMcen_q",SiPMcen_q,"SiPMcen_q[NpSiC]/D");
 	tNTP->Branch("SiPMcen_a",SiPMcen_a,"SiPMcen_a[NpSiC]/D");
 	tNTP->Branch("SiPMcen_t",SiPMcen_t,"SiPMcen_t[NpSiC]/D");
+	tNTP->Branch("SiPMcen_te",SiPMcen_te,"SiPMcen_te[NpSiC]/D");
 	//
 	tNTP->Branch("NpSiR",&NpSiR,"NpSiR/I");
 	tNTP->Branch("SiPMrig_q",SiPMrig_q,"SiPMrig_q[NpSiR]/D");
 	tNTP->Branch("SiPMrig_a",SiPMrig_a,"SiPMrig_a[NpSiR]/D");
 	tNTP->Branch("SiPMrig_t",SiPMrig_t,"SiPMrig_t[NpSiR]/D");
+	tNTP->Branch("SiPMrig_te",SiPMrig_te,"SiPMrig_te[NpSiR]/D");
 	//
 	tNTP->Branch("NpSiT",&NpSiT,"NpSiT/I");
 	tNTP->Branch("SiPMtop_q",SiPMtop_q,"SiPMtop_q[NpSiT]/D");
 	tNTP->Branch("SiPMtop_a",SiPMtop_a,"SiPMtop_a[NpSiT]/D");
 	tNTP->Branch("SiPMtop_t",SiPMtop_t,"SiPMtop_t[NpSiT]/D");
+	tNTP->Branch("SiPMtop_te",SiPMtop_te,"SiPMtop_te[NpSiT]/D");
 	//
 	// Trigger flags
 	// Laser
